@@ -1,0 +1,11 @@
+ID,Name,Cost,Category
+BEV-001,Espresso,2.50,BEVERAGE
+BEV-002,Soya Latte,3.50,BEVERAGE
+BEV-003,Coconut Frappuccino,4.50,BEVERAGE
+FOOD-001,Herring Sandwich,5.00,FOOD
+FOOD-002,Chocolate Muffin,3.00,FOOD
+FOOD-003,Vegan Wrap,4.50,FOOD
+OTHER-001,Coffee Beans (250g),12.00,OTHER
+OTHER-002,Reusable Keep Cup,15.00,OTHER
+123-BAD,Corrupted Item 1,0.00,OTHER
+FOOD-12,Corrupted Item 2,0.00,FOOD
