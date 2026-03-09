@@ -2,10 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+// Secondary class: No 'public' keyword
 enum Category {
     FOOD, BEVERAGE, OTHER
 }
 
+// Secondary class: No 'public' keyword
 class Order {
     private String customerId;
     private List<MenuItem> items;
