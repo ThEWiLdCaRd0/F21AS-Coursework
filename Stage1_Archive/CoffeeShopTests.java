@@ -1,4 +1,6 @@
+package Stage1_Archive;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CoffeeShopTests {
