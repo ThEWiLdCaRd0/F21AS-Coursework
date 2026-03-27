@@ -22,12 +22,16 @@ public class Logger {
         return instance;
     }
 
+    
+
     public synchronized void logEvent(String event) {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         String entry = "[" + timestamp + "] " + event;
         logEntries.add(entry);
         System.out.println(entry); // Print to console for debugging
     }
+
+
 
     public synchronized void writeLogToFile() {
         try (PrintWriter out = new PrintWriter(new FileWriter("simulation_log.txt"))) {
@@ -36,7 +40,10 @@ public class Logger {
             }
             System.out.println("Log successfully saved to simulation_log.txt");
         } catch (IOException e) {
-            System.err.println("Failed to write log file.");
+            System.err.println("Failed to write log file.");    
+
         }
+
     }
+
 }

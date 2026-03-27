@@ -27,7 +27,7 @@ public class MenuLoader {
                 }
             }
         } catch (IOException e) {
-            System.err.println("ERROR: Could not read " + filename);
+            System.err.println("ERROR: Could not read " + filename);//error cathced
         }
         return menu;
     }
