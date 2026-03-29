@@ -1,42 +1,21 @@
-[16:36:46] System Booting Up...
-[16:36:46] Starting Simulation...
-[16:36:48] CUST-100 joined the queue with 3 items.
-[16:36:48] Barista 1 (Alice) started processing order for CUST-100
-[16:36:50] LIVE-USER-3 joined the queue with 3 items.
-[16:36:50] Barista 2 (Bob) started processing order for LIVE-USER-3
-[16:36:53] LIVE-USER-2 joined the queue with 1 items.
-[16:36:55] LIVE-USER-1 joined the queue with 3 items.
-[16:36:55] The doors are closed. No more customers arriving.
-[16:37:07] Barista 2 (Bob) finished order for LIVE-USER-3
-[16:37:07] Barista 2 (Bob) started processing order for LIVE-USER-2
-[16:37:08] Barista 1 (Alice) finished order for CUST-100
-[16:37:08] Barista 1 (Alice) started processing order for LIVE-USER-1
-[16:37:11] Barista 2 (Bob) finished order for LIVE-USER-2
-[16:37:28] Barista 1 (Alice) finished order for LIVE-USER-1
-[16:37:49] LIVE-USER-1 joined the queue with 4 items.
-[16:37:49] Barista 2 (Bob) started processing order for LIVE-USER-1
-[16:37:53] LIVE-USER-2 joined the queue with 2 items.
-[16:37:53] Barista 1 (Alice) started processing order for LIVE-USER-2
-[16:37:56] LIVE-USER-3 joined the queue with 2 items.
-[16:37:58] Barista 1 (Alice) finished order for LIVE-USER-2
-[16:37:58] Barista 1 (Alice) started processing order for LIVE-USER-3
-[16:38:08] LIVE-USER-4 joined the queue with 2 items.
-[16:38:12] Barista 2 (Bob) finished order for LIVE-USER-1
-[16:38:12] Barista 2 (Bob) started processing order for LIVE-USER-4
-[16:38:12] LIVE-USER-5 joined the queue with 5 items.
-[16:38:14] Barista 1 (Alice) finished order for LIVE-USER-3
-[16:38:14] Barista 1 (Alice) started processing order for LIVE-USER-5
-[16:38:14] LIVE-USER-6 joined the queue with 1 items.
-[16:38:17] LIVE-USER-7 joined the queue with 1 items.
-[16:38:24] Barista 2 (Bob) finished order for LIVE-USER-4
-[16:38:24] Barista 2 (Bob) started processing order for LIVE-USER-6
-[16:38:25] LIVE-USER-8 joined the queue with 3 items.
-[16:38:26] Barista 2 (Bob) finished order for LIVE-USER-6
-[16:38:26] Barista 2 (Bob) started processing order for LIVE-USER-7
-[16:38:28] Barista 1 (Alice) finished order for LIVE-USER-5
-[16:38:28] Barista 1 (Alice) started processing order for LIVE-USER-8
-[16:38:28] Barista 2 (Bob) finished order for LIVE-USER-7
-[16:38:34] Barista 2 (Bob) clocked out.
-[16:38:47] Barista 1 (Alice) finished order for LIVE-USER-8
-[16:38:47] Barista 1 (Alice) clocked out.
-[16:38:47] All orders processed. Closing shop.
+[23:42:05] System Booting Up...
+[23:42:05] Starting Simulation...
+[23:42:05] The doors are closed. No more customers arriving.
+[23:42:28] LIVE-USER-1 joined the queue with 3 items.
+[23:42:28] Barista 1 (Alice) started processing order for LIVE-USER-1
+[23:42:39] LIVE-USER-2 joined the queue with 3 items.
+[23:42:39] Barista 2 (Bob) started processing order for LIVE-USER-2
+[23:42:42] LIVE-USER-3 joined the queue with 3 items.
+[23:42:44] LIVE-USER-4 joined the queue with 1 items.
+[23:42:47] LIVE-USER-5 joined the queue with 1 items.
+[23:42:47] Barista 1 (Alice) finished order for LIVE-USER-1
+[23:42:47] Barista 1 (Alice) started processing order for LIVE-USER-3
+[23:42:58] Barista 2 (Bob) finished order for LIVE-USER-2
+[23:42:58] Barista 2 (Bob) started processing order for LIVE-USER-4
+[23:43:02] Barista 2 (Bob) finished order for LIVE-USER-4
+[23:43:02] Barista 2 (Bob) started processing order for LIVE-USER-5
+[23:43:02] Barista 1 (Alice) finished order for LIVE-USER-3
+[23:43:08] Barista 2 (Bob) finished order for LIVE-USER-5
+[23:43:15] Barista 1 (Alice) clocked out.
+[23:43:15] Barista 2 (Bob) clocked out.
+[23:43:15] All orders processed. Closing shop.

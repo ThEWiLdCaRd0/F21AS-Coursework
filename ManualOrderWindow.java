@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,67 +16,81 @@ public class ManualOrderWindow extends JFrame {
     
     private static int liveCustomerCounter = 1;
     
-    // Cart State Management
+    // Core Data
+    private Map<String, MenuItem> menu;
+    private OrderQueue queue;
+    
+    // UI & Cart State Management
+    private JPanel gridPanel;
     private List<MenuItem> currentCart;
     private DefaultListModel<String> cartListModel;
     private JList<String> cartList;
     private JLabel totalLabel;
 
     public ManualOrderWindow(Map<String, MenuItem> menu, OrderQueue queue) {
-        currentCart = new ArrayList<>();
-        cartListModel = new DefaultListModel<>();
+        this.menu = menu;
+        this.queue = queue;
+        this.currentCart = new ArrayList<>();
+        this.cartListModel = new DefaultListModel<>();
         
-        setTitle("Live Point of Sale (Advanced)");
-        setSize(750, 500); // Widened to fit the cart panel
+        setTitle("Live Point of Sale (Pro Edition)");
+        setSize(950, 550); // Widened to fit the sidebar cleanly
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(new Color(40, 44, 52));
         
-        // --- LEFT PANEL: Menu Grid ---
-        JPanel gridPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        // Apply Centralized Theme to Background
+        getContentPane().setBackground(Theme.BG_DARK);
+        
+        // --- WEST PANEL: Category Sidebar ---
+        JPanel sidebarPanel = new JPanel();
+        sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
+        sidebarPanel.setPreferredSize(new Dimension(160, 0));
+        sidebarPanel.setBackground(Theme.BG_PANEL); // Using Theme Panel Color
+        sidebarPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Theme.BORDER_COLOR), "Categories", 
+            TitledBorder.LEFT, TitledBorder.TOP, Theme.TITLE_FONT, Theme.TEXT_LIGHT));
+        
+        // Add spacing and category buttons (using Theme colors)
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        sidebarPanel.add(createCategoryButton("All Items", null, new Color(150, 150, 150)));
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        sidebarPanel.add(createCategoryButton("Beverages", Category.BEVERAGE, Theme.BTN_BEVERAGE));
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        sidebarPanel.add(createCategoryButton("Food", Category.FOOD, Theme.BTN_FOOD));
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        sidebarPanel.add(createCategoryButton("Other", Category.OTHER, Theme.BTN_OTHER));
+        
+        add(sidebarPanel, BorderLayout.WEST);
+
+        // --- CENTER PANEL: Dynamic Menu Grid ---
+        gridPanel = new JPanel(new GridLayout(0, 2, 10, 10));
         gridPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
-        gridPanel.setBackground(new Color(30, 33, 39));
-        
-        // Generate buttons for every menu item
-        for (MenuItem item : menu.values()) {
-            JButton btn = new JButton("<html><center><b>" + item.getName() + "</b><br>£" + String.format("%.2f", item.getCost()) + "</center></html>");
-            
-            // Color code based on category
-            if (item.getCategory() == Category.BEVERAGE) btn.setBackground(new Color(70, 150, 220));
-            else if (item.getCategory() == Category.FOOD) btn.setBackground(new Color(100, 200, 100));
-            else btn.setBackground(new Color(220, 170, 70));
-            
-            btn.setForeground(Color.WHITE);
-            btn.setFocusPainted(false);
-            btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            
-            // Action: Add to Cart (Not immediately to the queue)
-            btn.addActionListener(e -> {
-                currentCart.add(item);
-                updateCartUI();
-            });
-            
-            gridPanel.add(btn);
-        }
+        gridPanel.setBackground(Theme.BG_DARK);
         
         JScrollPane menuScroll = new JScrollPane(gridPanel);
         menuScroll.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(Color.GRAY), "Menu (Click to add)", 
-            TitledBorder.LEFT, TitledBorder.TOP, new Font("SansSerif", Font.BOLD, 14), Color.WHITE));
+            BorderFactory.createLineBorder(Theme.BORDER_COLOR), "Menu (Click to add)", 
+            TitledBorder.LEFT, TitledBorder.TOP, Theme.TITLE_FONT, Theme.TEXT_LIGHT));
         add(menuScroll, BorderLayout.CENTER);
         
-        // --- RIGHT PANEL: Interactive Cart ---
+        // Populate the grid initially with all items
+        filterMenu(null);
+        
+        // --- EAST PANEL: Interactive Cart ---
         JPanel cartPanel = new JPanel(new BorderLayout(10, 10));
         cartPanel.setPreferredSize(new Dimension(280, 0));
         cartPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
-        cartPanel.setBackground(new Color(40, 44, 52));
+        cartPanel.setBackground(Theme.BG_DARK);
         
         cartList = new JList<>(cartListModel);
-        cartList.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        cartList.setFont(Theme.RECEIPT_FONT);
+        cartList.setBackground(Theme.RECEIPT_BG);
+        cartList.setForeground(Theme.RECEIPT_TEXT);
+        
         JScrollPane cartScroll = new JScrollPane(cartList);
         cartScroll.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(Color.GRAY), "Current Cart", 
-            TitledBorder.LEFT, TitledBorder.TOP, new Font("SansSerif", Font.BOLD, 14), Color.WHITE));
+            BorderFactory.createLineBorder(Theme.BORDER_COLOR), "Current Cart", 
+            TitledBorder.LEFT, TitledBorder.TOP, Theme.TITLE_FONT, Theme.TEXT_LIGHT));
         cartPanel.add(cartScroll, BorderLayout.CENTER);
         
         // Cart Controls
@@ -83,12 +98,13 @@ public class ManualOrderWindow extends JFrame {
         cartControls.setOpaque(false);
         
         totalLabel = new JLabel("Total: £0.00", SwingConstants.RIGHT);
-        totalLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
-        totalLabel.setForeground(Color.WHITE);
+        totalLabel.setFont(Theme.HEADER_FONT);
+        totalLabel.setForeground(Theme.TEXT_LIGHT);
         cartControls.add(totalLabel);
         
         JButton removeBtn = new JButton("Remove Selected");
         removeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        removeBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
         removeBtn.addActionListener(e -> {
             int selectedIndex = cartList.getSelectedIndex();
             if (selectedIndex != -1) {
@@ -102,6 +118,7 @@ public class ManualOrderWindow extends JFrame {
         
         JButton clearBtn = new JButton("Clear Cart");
         clearBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        clearBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
         clearBtn.addActionListener(e -> {
             currentCart.clear();
             updateCartUI();
@@ -109,48 +126,46 @@ public class ManualOrderWindow extends JFrame {
         cartControls.add(clearBtn);
         
         JButton sendBtn = new JButton("Send Order to Baristas");
-        sendBtn.setBackground(new Color(39, 174, 96));
+        sendBtn.setBackground(Theme.CHECKOUT_BTN);
         sendBtn.setForeground(Color.WHITE);
-        sendBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
+        sendBtn.setFont(Theme.BUTTON_FONT);
         sendBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        sendBtn.setUI(new BasicButtonUI());
         
-        // Action: Package the cart into a real Order and inject it into the thread queue
         sendBtn.addActionListener(e -> {
             if (currentCart.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Your cart is empty!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             
-            Order liveOrder = new Order("LIVE-USER-" + liveCustomerCounter++);
+            Order liveOrder = new Order("Customer " + liveCustomerCounter++);
             for (MenuItem item : currentCart) {
                 liveOrder.addItem(item);
             }
             
-            queue.addOrder(liveOrder); // Thread-safe injection!
-            saveOrderToCSV(liveOrder); // Save to orders.csv permanently
+            queue.addOrder(liveOrder); 
+            saveOrderToCSV(liveOrder); 
             
-            JOptionPane.showMessageDialog(this, "Order successfully sent to Baristas!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
-            // Reset for the next customer
+            // Note: removed success popup for snappier ordering!
             currentCart.clear();
             updateCartUI();
         });
         cartControls.add(sendBtn);
         
         JButton closeShopBtn = new JButton("Close Shop (Stop Simulation)");
-        closeShopBtn.setBackground(new Color(192, 57, 43));
-        closeShopBtn.setForeground(Color.WHITE);
-        closeShopBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
+        closeShopBtn.setBackground(Theme.CLOSE_BTN);
+        closeShopBtn.setForeground(Theme.TEXT_LIGHT);
+        closeShopBtn.setFont(Theme.BUTTON_FONT);
         closeShopBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        closeShopBtn.setUI(new BasicButtonUI());
         
-        // Action: Manually trigger shutdown
         closeShopBtn.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this, 
                 "Are you sure you want to close the shop?\nBaristas will finish the remaining queue and shut down.", 
                 "Close Shop", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                queue.setGenerationFinished(); // Manually trigger shutdown sequence
-                this.dispose(); // Close this window
+                queue.setGenerationFinished(); 
+                this.dispose(); 
             }
         });
         cartControls.add(closeShopBtn);
@@ -159,37 +174,93 @@ public class ManualOrderWindow extends JFrame {
         add(cartPanel, BorderLayout.EAST);
     }
     
-    // Helper method to keep the JList and Total Label synchronized with the underlying ArrayList
+    // --- UI HELPER METHODS ---
+
+    // Creates the buttons for the Sidebar
+    private JButton createCategoryButton(String text, Category filterCategory, Color bgColor) {
+        JButton btn = new JButton(text);
+        btn.setMaximumSize(new Dimension(140, 40));
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn.setBackground(bgColor);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setUI(new BasicButtonUI()); // Removes default Swing styling
+        
+        // When clicked, rebuild the Center grid!
+        btn.addActionListener(e -> filterMenu(filterCategory));
+        return btn;
+    }
+
+    // Clears and repopulates the Center Grid based on the chosen category
+    private void filterMenu(Category filter) {
+        gridPanel.removeAll(); // Clear existing buttons
+        
+        for (MenuItem item : menu.values()) {
+            // If filter is null, show everything. Otherwise, only show matches.
+            if (filter == null || item.getCategory() == filter) {
+                
+                String btnText = "<html><div style='text-align:center;'>"
+                               + "<span style='font-size:14px; font-weight:bold; color:" + Theme.BTN_TEXT_HEX + "; font-family:sans-serif;'>" + item.getName() + "</span><br><br>"
+                               + "<span style='font-size:16px; color:#c0392b; font-family:sans-serif;'><b>£" + String.format("%.2f", item.getCost()) + "</b></span>"
+                               + "</div></html>";
+                               
+                JButton btn = new JButton(btnText);
+                btn.setUI(new BasicButtonUI());
+                
+                // Color code based on category from Theme.java
+                if (item.getCategory() == Category.BEVERAGE) btn.setBackground(Theme.BTN_BEVERAGE);
+                else if (item.getCategory() == Category.FOOD) btn.setBackground(Theme.BTN_FOOD);
+                else btn.setBackground(Theme.BTN_OTHER);
+                
+                btn.setFocusPainted(false);
+                btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                btn.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Theme.BORDER_COLOR, 1, true),
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                ));
+                
+                btn.addActionListener(e -> {
+                    currentCart.add(item);
+                    updateCartUI();
+                });
+                
+                gridPanel.add(btn);
+            }
+        }
+        
+        // Force Swing to redraw the UI with the new buttons
+        gridPanel.revalidate();
+        gridPanel.repaint();
+    }
+    
+    // Keeps the JList and Total Label synchronized with the Cart array
     private void updateCartUI() {
         cartListModel.clear();
         double rawTotal = 0;
         
-        // Create a temporary order just to run it through our DiscountEngine
         Order tempOrder = new Order("TEMP");
-        
         for (MenuItem item : currentCart) {
             cartListModel.addElement(String.format("%-18s £%.2f", item.getName(), item.getCost()));
             rawTotal += item.getCost();
-            tempOrder.addItem(item); // Add to temp order for calculation
+            tempOrder.addItem(item); 
         }
         
-        // Calculate the final price using the engine
         double finalTotal = DiscountEngine.calculateFinalBill(tempOrder);
         
-        // If a discount was applied, update the label visually to reflect the deal
         if (finalTotal < rawTotal) {
             totalLabel.setText(String.format("Total: £%.2f (20%% OFF!)", finalTotal));
-            totalLabel.setForeground(new Color(80, 220, 120)); // Highlight in Green
+            totalLabel.setForeground(Theme.TOTAL_GREEN); 
         } else {
             totalLabel.setText(String.format("Total: £%.2f", finalTotal));
-            totalLabel.setForeground(Color.WHITE); // Default white
+            totalLabel.setForeground(Theme.TEXT_LIGHT); 
         }
     }
 
-    // NEW: File I/O method to save live orders to the history CSV
+    // Appends live orders to the history CSV
     private void saveOrderToCSV(Order order) {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        // FileWriter set to 'true' appends to the end of the file rather than overwriting it
         try (PrintWriter out = new PrintWriter(new FileWriter("orders.csv", true))) {
             for (MenuItem item : order.getItems()) {
                 out.println(timestamp + "," + order.getCustomerId() + "," + item.getId());
