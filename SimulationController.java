@@ -1,8 +1,8 @@
-import javax.swing.SwingUtilities;
-import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 // MVC CONTROLLER: Wires everything together and manages application lifecycle
 public class SimulationController {

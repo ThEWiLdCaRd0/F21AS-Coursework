@@ -1,7 +1,3 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,10 +7,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.plaf.basic.BasicButtonUI;
 
 public class ManualOrderWindow extends JFrame {
-    
-    private static int liveCustomerCounter = 1;
     
     // Core Data
     private Map<String, MenuItem> menu;
@@ -138,15 +136,23 @@ public class ManualOrderWindow extends JFrame {
                 return;
             }
             
-            Order liveOrder = new Order("Customer " + liveCustomerCounter++);
+            // FIX: Generate Stage 1 Timestamp
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            
+            // FIX: Generate Random Ticket ID to prevent log collisions
+            int ticketNumber = (int) (Math.random() * 9000) + 1000;
+            Order liveOrder = new Order("WALK-IN-" + ticketNumber, timestamp);
+            
             for (MenuItem item : currentCart) {
                 liveOrder.addItem(item);
             }
             
             queue.addOrder(liveOrder); 
-            saveOrderToCSV(liveOrder); 
             
-            // Note: removed success popup for snappier ordering!
+            // FIX: Background thread to prevent UI freezing on I/O
+            new Thread(() -> saveOrderToCSV(liveOrder)).start(); 
+            
+            // Note: respected teammate's choice to remove success popup for snappier ordering!
             currentCart.clear();
             updateCartUI();
         });
@@ -240,7 +246,7 @@ public class ManualOrderWindow extends JFrame {
         cartListModel.clear();
         double rawTotal = 0;
         
-        Order tempOrder = new Order("TEMP");
+        Order tempOrder = new Order("TEMP", "N/A"); // Updated to use the correct constructor
         for (MenuItem item : currentCart) {
             cartListModel.addElement(String.format("%-18s £%.2f", item.getName(), item.getCost()));
             rawTotal += item.getCost();
@@ -260,10 +266,10 @@ public class ManualOrderWindow extends JFrame {
 
     // Appends live orders to the history CSV
     private void saveOrderToCSV(Order order) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        // FIX: Grab the timestamp directly from the Order object to satisfy requirements
         try (PrintWriter out = new PrintWriter(new FileWriter("orders.csv", true))) {
             for (MenuItem item : order.getItems()) {
-                out.println(timestamp + "," + order.getCustomerId() + "," + item.getId());
+                out.println(order.getTimestamp() + "," + order.getCustomerId() + "," + item.getId());
             }
         } catch (IOException ex) {
             System.err.println("Error saving live order to file: " + ex.getMessage());

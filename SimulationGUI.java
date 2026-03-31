@@ -1,7 +1,7 @@
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
 public class SimulationGUI extends JFrame implements ObserverInterfaces {
     

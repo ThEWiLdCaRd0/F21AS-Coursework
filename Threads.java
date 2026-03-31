@@ -15,13 +15,19 @@ class CustomerGenerator implements Runnable {
     public void run() {
         try {
             for (Order order : historicalOrders) {
-                // Wait 1-3 seconds before next customer arrives (scaled by speed)
                 long delay = (long) (1000 + Math.random() * 2000);
                 Thread.sleep(delay / SimulationController.getSpeedMultiplier());
                 queue.addOrder(order);
             }
-            Logger.getInstance().logEvent("The doors are closed. No more customers arriving.");
-            //queue.setGenerationFinished();
+            
+            // RESTORED FIX: The Domain-Driven, human-like log message.
+            Logger.getInstance().logEvent("All online pre-orders have been queued. The walk-in register is now open.");
+            
+            // NOTE: We deliberately DO NOT call queue.setGenerationFinished() here.
+            // We leave the queue open so the user can continue injecting live orders 
+            // via the ManualOrderWindow. The queue will only be marked as finished 
+            // when the user explicitly clicks the "Close Shop" button in the GUI.
+            
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -54,18 +60,16 @@ class Server extends Thread implements Subject {
         try {
             while (true) {
                 Order order = queue.fetchNextOrder();
-                if (order == null) break; // Queue empty and doors closed
+                if (order == null) break; 
 
                 Logger.getInstance().logEvent(serverName + " started processing order for " + order.getCustomerId());
                 
-                // Build status string
                 StringBuilder sb = new StringBuilder();
                 sb.append("Processing ").append(order.getCustomerId()).append("...\n");
                 long totalPrepTime = 0;
                 
                 for (MenuItem item : order.getItems()) {
                     sb.append("- ").append(item.getName()).append("\n");
-                    // Requirement: Beverages 2-4s, Food 6-10s
                     if (item.getCategory() == Category.BEVERAGE) {
                         totalPrepTime += 2000 + (Math.random() * 2000); 
                     } else if (item.getCategory() == Category.FOOD) {
@@ -79,7 +83,6 @@ class Server extends Thread implements Subject {
                 sb.append("\nTotal: £").append(String.format("%.2f", finalTotal));
                 setStatus(sb.toString());
 
-                // Simulate the actual making of the coffee
                 Thread.sleep(totalPrepTime / SimulationController.getSpeedMultiplier());
                 
                 Logger.getInstance().logEvent(serverName + " finished order for " + order.getCustomerId());

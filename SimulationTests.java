@@ -3,7 +3,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SimulationTests {
 
-
     @Test
     public void testLoggerIsSingleton() {
         // Fetch the logger instance twice
@@ -14,11 +13,11 @@ public class SimulationTests {
         assertSame(logger1, logger2, "Logger should follow the Singleton pattern and only create one instance.");
     }
 
-
     @Test
     public void testOrderQueueAddsOrders() {
         OrderQueue queue = new OrderQueue();
-        Order order = new Order("TEST-CUST-01");
+        // FIX: Added a dummy timestamp to satisfy the updated Order constructor requirement
+        Order order = new Order("TEST-CUST-01", "2026-03-31 10:00");
         
         queue.addOrder(order);
         
@@ -29,7 +28,8 @@ public class SimulationTests {
     @Test
     public void testOrderQueueFetchesOrders() throws InterruptedException {
         OrderQueue queue = new OrderQueue();
-        Order order = new Order("TEST-CUST-02");
+        // FIX: Added a dummy timestamp
+        Order order = new Order("TEST-CUST-02", "2026-03-31 10:00");
         
         queue.addOrder(order); // Add first so the fetch doesn't block
         Order fetchedOrder = queue.fetchNextOrder();
@@ -52,11 +52,11 @@ public class SimulationTests {
         assertNull(fetchedOrder, "Fetch should return null when generation is finished and queue is empty.");
     }
 
-
     @Test
     public void testDiscountEngineMealDeal() throws InvalidIdentifierException {
         // Validating the Stage 1 business logic still works perfectly in the Stage 2 Models.java
-        Order order = new Order("TEST-CUST-03");
+        // FIX: Added a dummy timestamp
+        Order order = new Order("TEST-CUST-03", "2026-03-31 10:00");
         order.addItem(new MenuItem("BEV-001", "Coffee", 2.50, Category.BEVERAGE));
         order.addItem(new MenuItem("FOOD-001", "Sandwich", 5.00, Category.FOOD));
         order.addItem(new MenuItem("FOOD-002", "Cake", 2.50, Category.FOOD));

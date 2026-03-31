@@ -13,7 +13,7 @@ class MenuItem {
     private String name;
     private double cost;
     private Category category;
-    private static final Pattern ID_PATTERN = Pattern.compile("^[A-Z]+-\\d{3}$");
+    private static final Pattern ID_PATTERN = Pattern.compile("^[A-Z]+\\-\\d{3}$");
 
     public MenuItem(String id, String name, double cost, Category category) throws InvalidIdentifierException {
         if (!ID_PATTERN.matcher(id).matches()) {
@@ -33,13 +33,16 @@ class MenuItem {
 
 class Order {
     private String customerId;
+    private String timestamp; // RESTORED FIX: Missing Stage 1 Timestamp Requirement
     private List<MenuItem> items;
 
-    public Order(String customerId) {
+    public Order(String customerId, String timestamp) { // RESTORED FIX
         this.customerId = customerId;
+        this.timestamp = timestamp;
         this.items = new ArrayList<>();
     }
     public String getCustomerId() { return customerId; }
+    public String getTimestamp() { return timestamp; } // RESTORED FIX
     public void addItem(MenuItem item) { this.items.add(item); }
     public List<MenuItem> getItems() { return items; }
     public double getRawTotal() {
