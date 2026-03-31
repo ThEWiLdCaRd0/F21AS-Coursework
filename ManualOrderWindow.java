@@ -31,7 +31,7 @@ public class ManualOrderWindow extends JFrame {
         this.currentCart = new ArrayList<>();
         this.cartListModel = new DefaultListModel<>();
         
-        setTitle("Live Point of Sale (Pro Edition)");
+        setTitle("Point of Sale");
         setSize(950, 550); // Widened to fit the sidebar cleanly
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         setLayout(new BorderLayout(10, 10));

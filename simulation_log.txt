@@ -1,18 +1,30 @@
-[11:09:15] System Booting Up...
-[11:09:15] Starting Simulation...
-[11:09:17] WALK-IN-7107 joined the queue with 3 items.
-[11:09:17] Barista 1 (Alice) started processing order for WALK-IN-7107
-[11:09:19] WALK-IN-5722 joined the queue with 4 items.
-[11:09:19] All online pre-orders have been queued. The walk-in register is now open.
-[11:09:19] Barista 2 (Bob) started processing order for WALK-IN-5722
-[11:09:22] Barista 1 (Alice) finished order for WALK-IN-7107
-[11:09:23] WALK-IN-7793 joined the queue with 4 items.
-[11:09:23] Barista 1 (Alice) started processing order for WALK-IN-7793
-[11:09:27] WALK-IN-9747 joined the queue with 4 items.
-[11:09:43] Barista 2 (Bob) finished order for WALK-IN-5722
-[11:09:43] Barista 2 (Bob) started processing order for WALK-IN-9747
-[11:09:46] Barista 2 (Bob) finished order for WALK-IN-9747
-[11:09:46] Barista 2 (Bob) clocked out.
-[11:09:49] Barista 1 (Alice) finished order for WALK-IN-7793
-[11:09:49] Barista 1 (Alice) clocked out.
-[11:09:49] All orders processed. Closing shop.
+[11:25:56] System Booting Up...
+[11:25:56] Starting Simulation...
+[11:25:59] WALK-IN-7107 joined the queue with 3 items.
+[11:25:59] Barista 1 (Alice) started processing order for WALK-IN-7107
+[11:26:00] WALK-IN-5722 joined the queue with 2 items.
+[11:26:00] Barista 2 (Bob) started processing order for WALK-IN-5722
+[11:26:03] Barista 1 (Alice) finished order for WALK-IN-7107
+[11:26:03] WALK-IN-6981 joined the queue with 3 items.
+[11:26:03] Barista 1 (Alice) started processing order for WALK-IN-6981
+[11:26:06] WALK-IN-9851 joined the queue with 1 items.
+[11:26:07] WALK-IN-6982 joined the queue with 2 items.
+[11:26:08] WALK-IN-8273 joined the queue with 3 items.
+[11:26:10] Barista 2 (Bob) finished order for WALK-IN-5722
+[11:26:10] Barista 2 (Bob) started processing order for WALK-IN-9851
+[11:26:10] WALK-IN-4557 joined the queue with 3 items.
+[11:26:12] WALK-IN-7063 joined the queue with 3 items.
+[11:26:12] All online pre-orders have been queued. The walk-in register is now open.
+[11:26:12] Barista 2 (Bob) finished order for WALK-IN-9851
+[11:26:12] Barista 2 (Bob) started processing order for WALK-IN-6982
+[11:26:22] Barista 1 (Alice) finished order for WALK-IN-6981
+[11:26:22] Barista 1 (Alice) started processing order for WALK-IN-8273
+[11:26:29] Barista 2 (Bob) finished order for WALK-IN-6982
+[11:26:29] Barista 2 (Bob) started processing order for WALK-IN-4557
+[11:26:34] Barista 1 (Alice) finished order for WALK-IN-8273
+[11:26:34] Barista 1 (Alice) started processing order for WALK-IN-7063
+[11:26:47] Barista 2 (Bob) finished order for WALK-IN-4557
+[11:26:47] Barista 2 (Bob) clocked out.
+[11:26:53] Barista 1 (Alice) finished order for WALK-IN-7063
+[11:26:53] Barista 1 (Alice) clocked out.
+[11:26:53] All orders processed. Closing shop.
